@@ -1,0 +1,220 @@
+---
+title: "A Comprehensive Analysis of the Trends and Distribution of Stillbirth Licenses in Civic Centres (2011–2024)"
+author:
+  - Zeyi Cai
+thanks: "A GitHub Repository containing all data, R code, and other files used in this investigation is located here: "
+date: 09-22-2024
+date-format: long
+abstract: "This statistical study examines the stillbirth licences issued by Toronto Civic Centres from 2011 and 2024, based on the trend, distribution, and comparability of the four civic centres.The pattern of stillbirth licenses and the notable variations between time changes and civic centres are highlighted by the analysis's use of descriptive statistics and visualization, such as line, bar, scatter, and box plots." 
+### According to the survey results, certain centres will continue to abnormally issue more licenses during specific times.By understanding these trends, future health care policies and support services can be provided to families affected by stillbirth. ###
+format: pdf
+number-sections: true
+# The toc parameter used to create a table of contents was obtained from
+# Quarto documentation:
+# https://quarto.org/docs/reference/formats/pdf.html
+toc: true
+bibliography: references.bib 
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#### Preamble ####
+
+# Purpose: To analyze the distribution and trends of stillbirth licenses issued across different civic centers in Toronto from 2011 to 2024 by investigating the statistics patterns in the issuance of stillbirth licenses.
+# Author: Zeyi Cai
+# Date: September 22, 2024
+# Contact: zcloris.cai@mail.utoronto.ca
+# Pre-requisites: Run the files "01-download_data.R" and "02-data_cleaning.R".
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#### Loading Packages ####
+
+# install.packages("tidyverse")
+# install.packages("here")
+library(tidyverse)
+library(opendatatoronto)
+```
+
+# Introduction {#sec-introduction}
+
+Stillbirth is a significant public health issue that impacts families globally. Important information about stillbirth prevalence and distribution across many regions is provided by the licensing of stillbirths. The number of stillbirth licences that Toronto Civic Centres have issued in the 13 years between 2011 and 2024 will be examined in this study. Our primary objectives in examining this data are to find long-term patterns and seasonal variations in stillbirth licenses, pinpoint times and areas where stillbirths are more common, and identify civic centres that might benefit from further assistance and intervention. In order to comprehend the imbalance in geographical distribution, a comparison of the variations in the quantity of stillbirth licences issued in various civic centres was made. Ultimately, the study examines how medical resources are allocated or other environmental factors that have an impact on the occurrence of stillbirth. The findings of this study are crucial to the policymakers, social service agencies, and planners of health care. In addition to improving resource allocation, the government can offer focused assistance and care to stillbirth families.
+
+
+
+# Data {#sec-data}
+
+## Overview {#sec-data-overview}
+This dataset includes information about registration of stillbirths documented by Registry Services at the Etobicoke Civic Centre. Registration of stillbirths is entered into the Registry Services Tracking System (RSTS), from which aggregate statistical information is generated to create the dataset. The dataset resides in an Oracle database in the City's environment[@citeopendatatoronto].
+
+The dataset is created in support of the Vital Statistics Act, which is Provincial legislation. The dataset also supports the City's operational requirements and business functions[@citeopendatatoronto].
+
+The dataset used in this analysis contains three primary variables:
+Civic Centre(named “CIVIC_CENTRE” in the original dataset): Identifies the code of civic centre where the stillbirth licences are issued.
+Stillbirth Licenses(named “STILLBIRTH_LICENSES” in the original dataset): The number of licenses issued in a given time period (monthly).
+Time Period(named “TIME_PERIOD” in the original dataset): Month death registered, ranging from January 2011 to July 2024[@citeopendatatoronto].
+
+There are four civic centers in the dataset, each with distinct patterns in the issuance of stillbirth licenses. The data spans over 143 months and reflects variability in stillbirth license distribution, both over time and across different civic centers[@citeopendatatoronto].
+
+Using the R programming language [@citeR], the `janitor` [@citejanitor] and `tidyverse` [@citetidyverse] packages were used to simulate the dataset and generate tests for it. The `opendatatoronto` [@citeopendatatoronto] and `tidyverse` [@citetidyverse] packages were then applied in order to download the raw Toronto Public Health dataset. Next, the `tidyverse` package [@citetidyverse] was used to clean the raw dataset and test the cleaned dataset.
+
+## Results {#sec-data-results}
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+#### Loading the Cleaned Dataset ####
+stillbirth_regist_packages <- search_packages("Stillbirth Registration Statistics")
+stillbirth_regist_packages
+# Retrieve a list of all resources (datasets) available within the found package
+stillbirth_regist_resources <- stillbirth_regist_packages %>%
+  list_package_resources()
+# Display the list of resources available in the "Stillbirth Registration Statistics" package
+stillbirth_regist_resources
+
+stillbirth_regist_statistics <- stillbirth_regist_resources[2,] %>%
+  get_resource()
+
+data = stillbirth_regist_statistics
+```
+
+After loading the dataset using the R programming language [@citeR] and the `here` package [@citehere], the `tidyverse` [@citetidyverse] package was used to generate graphs. In doing so, R code was adapted from @tellingstorieswithdata.
+
+\newpage
+
+```{r}
+#| echo: false
+#| warning: false
+
+#### First Graph Labels ####
+
+# This code is based on knowledge from Alexander (2023).
+
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-distri-by-civic-type
+#| fig-cap: "Distribution of Stillbirth Licenses by Civic Centre"
+
+#### First Graph ####
+
+# This code is based on knowledge from Alexander (2023).
+# Box Plot: Distribution of Stillbirth Licenses by Civic Centre
+ggplot(data, aes(x = CIVIC_CENTRE, y = STILLBIRTH_LICENSES, fill = CIVIC_CENTRE)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Stillbirth Licenses by Civic Centre", 
+       x = "Civic Centre", y = "Stillbirth Licenses") +
+  theme_minimal()
+```
+
+@fig-distri-by-civic-type illustrates that the distribution of stillbirth licenses for each civic center. It shows the median, interquartile range, and potential outliers. Some civic centers have wider interquartile ranges, indicating more variability in their issuance patterns, while others have more consistent, centralized distributions.
+
+\newpage
+
+```{r}
+#| echo: false
+#| warning: false
+
+#### Second Graph Labels ####
+
+# This code is based on knowledge from Alexander (2023).
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-licenses-by-civic-type
+#| fig-cap: "Total Stillbirth Licenses by Civic Centre"
+
+#### Second Graph ####
+
+# This code is based on knowledge from Alexander (2023).
+
+# Bar Plot: Total Stillbirth Licenses by Civic Centre
+ggplot(data, aes(x = CIVIC_CENTRE, y = STILLBIRTH_LICENSES, fill = CIVIC_CENTRE)) +
+  stat_summary(fun = sum, geom = "bar") +
+  labs(title = "Total Stillbirth Licenses by Civic Centre", 
+       x = "Civic Centre", y = "Total Stillbirth Licenses") +
+  theme_minimal()
+
+```
+
+@fig-licenses-by-civic-type shows that the total number of stillbirth licenses that each civic centre has issued is displayed in a bar plot. The majority of licenses are issued by one or two civic centres, according to the statistics, which suggests that these organizations may serve larger populations or areas with greater rates of stillbirths. The uneven distribution of stillbirths throughout the city is made easier to see with the bar plot.
+
+
+\newpage
+
+```{r}
+#| echo: false
+#| warning: false
+
+#### Third Graph Labels ####
+
+# This code is based on knowledge from Alexander (2023).
+
+
+# Genera
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-distri_by_time_type
+#| fig-cap: "Distribution of Stillbirth Licenses Over Time"
+
+#### Third Graph ####
+# Scatter Plot: Distribution of Stillbirth Licenses Over Time
+ggplot(data, aes(x = TIME_PERIOD, y = STILLBIRTH_LICENSES, color = CIVIC_CENTRE)) +
+  geom_point() +
+  labs(title = "Scatter Plot of Stillbirth Licenses Over Time", 
+       x = "Time Period", y = "Stillbirth Licenses") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+@fig-distri_by_time_type illustrates that the correlation between the number of stillbirth licenses and the passage of time. Most of the data points are concentrated around lower values, however there are a few notable exceptions where a disproportionately large number of licenses were granted in a given month. These anomalies might be related to outside occurrences like shifts in reporting guidelines or public health emergencies.
+
+
+# Discussion {#sec-discussion}
+
+In @sec-data-results, the data reveals a notable variation in the quantity of licenses for stillbirths granted by civic centres. Centres with a high degree of license variability for stillbirths demonstrate how access to medical treatment varies by location. The outliers shown in the distributed chart indicate that in some months, the rate of stillbirths is excessively high, which may be attributed to environmental variables or access to health care.
+
+The line chart's seasonal tendencies may also point to outside factors like the weather, flu season, or pressures that highlight the necessity of focused medical measures, particularly around particular peaks.
+
+Furthermore, a few centres have a disproportionate number of stillbirth permits, indicating that these areas can gain from more funding for healthcare and assistance for bereaved families.
+
+This study highlights the important trend of the issuance of stillbirth permits at the Toronto Civic Centre from 2011 to 2024. The analysis shows that the incidence of stillbirth in time and space changes is significantly higher in some urban centres and months. Subsequent investigations have to concentrate on comprehending the elements contributing to these shifts and devising strategies to lower the frequency of stillbirths. These data can be used by policy makers and healthcare professionals to better allocate resources and offer tailored help to impacted areas.
+
+\newpage
+
+\appendix
+
+# Appendix {#sec-appendix}
+
+## Dataset and Graph Sketches {#sec-appendix-sketches}
+
+Sketches depicting both the desired dataset and the graphs generated in this analysis are available in the GitHub Repository.
+
+## Data Cleaning {#sec-appendix-cleaning}
+
+The data cleaning process involved filtering out some of the columns from the raw dataset and renaming some of the data entries for clarity and simplicity.
+
+## Attribution Statement {#sec-appendix-attribution}
+
+"Contains information licensed under the Open Government Licence – Toronto" [@tphlicense].
+
+\newpage
+
+# References {#sec-references}
+
+In this draft, I used chatgpt to generate r code for plotting and some anaysis for my data. I will rewrite and rephase them soon before next submisson.
